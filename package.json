@@ -1,0 +1,31 @@
+{
+  "name": "lazy-loading",
+  "version": "1.0.0",
+  "description": "Lazy loading plugin in purejs ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:watch": "webpack --watch",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cojok/lazy-loading.git"
+  },
+  "keywords": [
+    "lazy",
+    "loading",
+    "pure",
+    "js"
+  ],
+  "author": "cojokka@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cojok/lazy-loading/issues"
+  },
+  "homepage": "https://github.com/cojok/lazy-loading#readme",
+  "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1"
+  }
+}
