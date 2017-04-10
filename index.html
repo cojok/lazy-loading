@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Lazy Loading - Pure js ES6</title>
+    <style>
+        body {
+            width: 100%;
+            margin: 0;
+        }
+
+        header {
+            position: relative;
+            display: block;
+            width: 100%;
+            overflow: hidden;
+            height: calc(100vh - 70px);
+            margin-bottom: 200px;
+        }
+
+        div {
+            width: 100%;
+            height: calc(100% - 190px);
+            overflow: hidden;
+            position: relative;
+            height: calc(100%);
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .responsive-bg {
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+        }
+        h1 {
+            width: 120px;
+            font-size: 18px;
+            color: #fff;
+            text-shadow: 1px 1px 1px #3c3c3c;
+            text-align: center;
+            margin:  50px auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="responsive-bg" style="background-image: url('//static.travador.com/images/offers/52805103/457252/320/214')">
+            <h1 class="size"></h1>
+            <span data-src="//static.travador.com/images/offers/52805103/457252/320/214" data-media="max-width:320px"></span>
+            <span data-src="//static.travador.com/images/offers/52805103/457252/480/320" data-media="(max-width: 479px)"></span>
+            <span data-src="//static.travador.com/images/offers/52805103/457252/767/511" data-media="(min-width: 480px)"></span>
+            <span data-src="//static.travador.com/images/offers/52805103/457252/1023/628" data-media="(min-width: 48em)"></span>
+            <span data-src="//static.travador.com/images/offers/52805103/457252/1920/1280" data-media="(min-width: 64em)"></span>
+        </div>
+    </header>
+
+    <img class="responsive-img" src="assets/reload.gif" data-img='[{
+                                                                    "src": "//static.travador.com/images/offers/52805103/457252/480/320",
+                                                                    "media": "(min-width: 1px)"
+                                                                }, {
+                                                                    "src": "//static.travador.com/images/offers/52805103/457252/767/511",
+                                                                    "media": "(min-width: 480px)"
+                                                                }, {
+                                                                    "src": "//static.travador.com/images/offers/52805103/457252/1023/628",
+                                                                    "media": "(min-width: 48em)"
+                                                                },{
+                                                                    "src": "//static.travador.com/images/offers/52805103/457252/1920/1280",
+                                                                    "media": "(min-width: 64em)"
+                                                                }]'>
+    <script src="build/lazyLoading.js"></script>
+</body>
+</html>
