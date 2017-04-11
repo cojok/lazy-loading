@@ -1,193 +1,237 @@
 /**
  * Created by cojok on 10/04/17.
  */
-
-class LazyLoading {
-
-    constructor() {
-        this.bgHolder  = document.querySelectorAll('.responsive-bg');
-        this.imgHolder = document.querySelectorAll('.responsive-img');
-
-    }
-
-    responsiveBackground() {
-        let parent   = this,
-            i        = 0,
-            bgImgSrc = null;
-        for (i; i < parent.bgHolder.length; i++) {
-            let holder  = parent.bgHolder[i],
-                bgImg   = holder.querySelectorAll('span'),
-                matches = [],
-                y       = 0;
-            for (y; y < bgImg.length; y++) {
-                let w            = bgImg[y],
-                    bgImgDataSrc = w.getAttribute('data-src'),
-                    bgImgMedia   = w.getAttribute('data-media');
-                if (bgImgDataSrc && ((window.matchMedia && window.matchMedia(bgImgMedia).matches))) {
-                    matches.push(bgImgDataSrc);
-                }
-            }
-
-            if (matches.length > 0) {
-                bgImgSrc = matches.pop();
-            }
-            // if(parent.inView(holder)) {
-            //     if(bgImgSrc !== holder.style.backgroundImage.replace('url("','').replace('")','')) {
-            //         parent.preloadImage(bgImgSrc, holder, 'bg');
-            //     }
-            // }
-        }
-    }
-
-    responsiveImg() {
-        let parent = this,
-            i      = 0,
-            imgSrc = null;
-
-        for (i; i < parent.imgHolder.length; i++) {
-            let holder  = parent.imgHolder[i],
-                imgData = JSON.parse(holder.getAttribute('data-img')),
-                matches = [],
-                y       = 0;
-            for (y; y < Object.keys(imgData).length; y++) {
-                let w            = imgData[y],
-                    imgDataSrc   = w.src,
-                    imgDataMedia = w.media;
-
-                if (imgDataSrc && ((window.matchMedia && window.matchMedia(imgDataMedia).matches))) {
-                    matches.push(imgDataSrc);
-                }
-            }
-
-            if (matches.length) {
-                imgSrc = matches.pop();
-            }
-            console.info(parent.inView(holder));
-            // if(parent.inView(holder)) {
-                if(imgSrc !== holder.src){
-                    parent.preloadImage(imgSrc, holder, 'img');
-                }
-            // }
-        }
-    }
-
-    preloadImage(source, element, type) {
-        let parent = this;
-        if (source == '' || source == null) {
-            return false;
-        }
-        let imgsrc    = new Image();
-        imgsrc.src    = source;
-        imgsrc.elm    = element;
-        imgsrc.onload = function () {
-            if (type === 'bg') {
-                this.elm.style.backgroundImage = "url('" + source + "')";
-            }
-            else {
-                this.elm.src = source;
-            }
-        };
-    }
-
-    inView(element) {
-
-        let top = element.offsetTop,
-            bottom = parseFloat(element.offsetTop) + parseFloat(element.offsetHeight),
-            windowBottom = (document.documentElement || document.body).scrollTop + window.innerHeight,
-            windowTop = (document.documentElement || document.body).scrollTop;
-
-        return (top >= windowTop && bottom <= windowBottom);
-    }
-
-    init() {
-        //this.responsiveBackground();
-        this.responsiveImg();
-    }
-}
-
-export default LazyLoading;
-
-//  var BgPolyfill = (function () {
-//         function BgPolyfill() {
-//             /**
-//              * Object containing references to event listeners attached by offcanvas.
-//              * We need those references to be albe to remove them if needed.
-//  * @type {IConfiguratorEventListeners}
-//  */
-// this.eventListeners = {};
-// this.$bgHolder = document.querySelectorAll('.responsive-bg');
-// this.$imgTags = document.querySelectorAll('.homepage img');
-// this.attachEventListeners();
-// }
-// BgPolyfill.prototype.bgPolyfill = function () {
-//     var parent = this;
-//     for (var i = 0; i < parent.$bgHolder.length; i++) {
-//         var v = parent.$bgHolder[i];
-//         var $bgImg = v.querySelectorAll('span');
-//         var $bgImgMatches = [];
-//         for (var y = 0; y < $bgImg.length; y++) {
-//             var w = $bgImg[y];
-//             var $bgImgSrc_1 = w.getAttribute('data-src');
-//             var $bgImgMedia = w.getAttribute('data-media');
-//             if ($bgImgSrc_1 && ((window.matchMedia && window.matchMedia($bgImgMedia).matches))) {
-//                 $bgImgMatches.push($bgImgSrc_1);
+//
+// class LazyLoading {
+//
+//     constructor() {
+//         this.bgHolder  = document.querySelectorAll('.responsive-bg');
+//         this.imgHolder = document.querySelectorAll('.responsive-img');
+//         this.timer = null;
+//
+//     }
+//
+//     responsiveBackground() {
+//         let parent   = this,
+//             i        = 0,
+//             bgImgSrc = null,
+//             evtCount = 0;
+//         for (i; i < parent.bgHolder.length; i++) {
+//             let holder  = parent.bgHolder[i],
+//                 bgImg   = holder.querySelectorAll('span'),
+//                 matches = [],
+//                 y       = 0;
+//             for (y; y < bgImg.length; y++) {
+//                 let w            = bgImg[y],
+//                     bgImgDataSrc = w.getAttribute('data-src'),
+//                     bgImgMedia   = w.getAttribute('data-media');
+//                 if (bgImgDataSrc && ((window.matchMedia && window.matchMedia(bgImgMedia).matches))) {
+//                     matches.push(bgImgDataSrc);
+//                 }
+//             }
+//
+//             if (matches.length > 0) {
+//                 bgImgSrc = matches.pop();
+//             }
+//
+//             console.log(parent.inView(holder));
+//
+//             if (parent.inView(holder)) {
+//                 if (bgImgSrc !== holder.style.backgroundImage.replace('url("', '').replace('")', '')) {
+//                     parent.preloadImage(bgImgSrc, holder, 'bg');
+//                     evtCount++;
+//                 }
 //             }
 //         }
-//         var winWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-//         var $bgImgSrc = null;
-//         if ($bgImgMatches.length) {
-//             if (winWidth > 400) {
-//                 $bgImgSrc = $bgImgMatches.pop();
+//
+//         console.log(evtCount);
+//
+//         if (!parent.bgHolder.length || evtCount == parent.bgHolder.length) {
+//             parent.destroy();
+//         }
+//     }
+//
+//     responsiveImg() {
+//         let parent   = this,
+//             i        = 0,
+//             imgSrc   = null,
+//             evtCount = 0;
+//
+//         for (i; i < parent.imgHolder.length; i++) {
+//             let holder  = parent.imgHolder[i],
+//                 imgData = JSON.parse(holder.getAttribute('data-img')),
+//                 matches = [],
+//                 y       = 0;
+//             for (y; y < Object.keys(imgData).length; y++) {
+//                 let w            = imgData[y],
+//                     imgDataSrc   = w.src,
+//                     imgDataMedia = w.media;
+//
+//                 if (imgDataSrc && ((window.matchMedia && window.matchMedia(imgDataMedia).matches))) {
+//                     matches.push(imgDataSrc);
+//                 }
+//             }
+//
+//             if (matches.length) {
+//                 imgSrc = matches.pop();
+//             }
+//
+//             if (parent.inView(holder)) {
+//                 if (imgSrc !== holder.src) {
+//                     parent.preloadImage(imgSrc, holder, 'img');
+//                     evtCount++;
+//                 }
+//             }
+//         }
+//
+//         if (!parent.imgHolder.length || evtCount == parent.imgHolder.length) {
+//             parent.destroy();
+//         }
+//     }
+//
+//     preloadImage(source, element, type) {
+//         let parent = this;
+//         if (source == '' || source == null) {
+//             return false;
+//         }
+//         let imgsrc    = new Image();
+//         imgsrc.src    = source;
+//         imgsrc.elm    = element;
+//         imgsrc.onload = function () {
+//             if (type === 'bg') {
+//                 this.elm.style.backgroundImage = "url('" + source + "')";
 //             }
 //             else {
-//                 $bgImgSrc = $bgImgMatches[0];
+//                 this.elm.src = source;
 //             }
-//         }
-//         parent.preloadImage($bgImgSrc, v, 'bg');
+//         };
 //     }
-// };
-// BgPolyfill.prototype.loadVisibleImg = function () {
-//     var parent = this;
-//     var winWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-//     for (var i = 0; i < parent.$imgTags.length; i++) {
-//         var value = parent.$imgTags[i];
-//         if (winWidth < 768 && !(value.offsetWidth || value.offsetHeight || value.getClientRects().length)) {
-//             return;
-//         }
-//         var $bgImgSrc = value.getAttribute('data-src');
-//         parent.preloadImage($bgImgSrc, value, 'img');
+//
+//     inView(element) {
+//
+//         let top          = element.offsetTop,
+//             bottom       = parseFloat(element.offsetTop) + parseFloat(element.offsetHeight),
+//             windowBottom = (document.documentElement || document.body).scrollTop + window.innerHeight,
+//             windowTop    = (document.documentElement || document.body).scrollTop;
+//             console.log(windowTop);
+//         //return ((top >= windowTop) && (bottom <= windowBottom));
+//         //  var elemTop    = element.getBoundingClientRect().top;
+//         // var elemBottom = element.getBoundingClientRect().bottom;
+//         //
+//         //  var isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight);
+//         //  return isVisible;
+//
+//         var viewport = element.getBoundingClientRect();
+//         return (viewport.top >=0 && viewport.left >=0 && viewport.right < window.innerWidth && viewport.bottom < window.innerHeight);
 //     }
-// };
-// BgPolyfill.prototype.preloadImage = function (source, element, type) {
-//     if (source == '' || source == null) {
-//         return false;
+//
+//     // preInit() {
+//     //     this.timer = setTimeout(() => {
+//     //         this.responsiveImg();
+//     //     },1000);
+//     // }
+//
+//     init() {
+//         let parent = this;
+//         window.addEventListener("resize", parent.responsiveImg, false);
+//         window.addEventListener("scroll", parent.responsiveImg, false);
+//         window.addEventListener("DOMContentLoaded", function () {
+//             parent.responsiveImg();
+//         }, false);
 //     }
-//     var imgsrc = new Image();
-//     var type = type || 'bg';
-//     imgsrc.src = source;
-//     imgsrc.elm = element;
-//     imgsrc.onload = function () {
-//         if (type === 'bg') {
-//             this.elm.style.backgroundImage = "url('" + source + "')";
-//         }
-//         else {
-//             this.elm.src = source;
+//
+//     destroy() {
+//         let parent = this;
+//         window.removeEventListener('scroll', parent.responsiveImg, false);
+//         clearTimeout(this.timer);
+//     }
+// }
+//
+// export default LazyLoading;
+
+// (function (root) {
+//     'use strict';
+//     var delay, timer, eventCount = 0;
+//     root.lazy                    = {
+//         init         : function (options) {
+//             delay = options.delay || 0;
+//             if (document.addEventListener) {
+//                 root.addEventListener('scroll', lazy.engine, false);
+//                 root.addEventListener('load', lazy.engine, false);
+//             } else {
+//                 root.attachEvent('onscroll', lazy.engine);
+//                 root.attachEvent('onload', lazy.engine);
+//             }
+//
+//         },
+//         engine       : function () {
+//             timer = setTimeout(function () {
+//                 lazy.loadImage();
+//             }, delay);
+//         },
+//         loadImage    : function () {
+//             var elements = document.querySelectorAll('.responsive-img'),
+//                 imgSrc   = null;
+//             for (var i = 0; i < elements.length; i++) {
+//                 var holder  = elements[i],
+//                     imgData = JSON.parse(holder.getAttribute('data-img')),
+//                     matches = [],
+//                     y       = 0;
+//                 for (y; y < Object.keys(imgData).length; y++) {
+//                     let w            = imgData[y],
+//                         imgDataSrc   = w.src,
+//                         imgDataMedia = w.media;
+//
+//                     if (imgDataSrc && ((window.matchMedia && window.matchMedia(imgDataMedia).matches))) {
+//                         matches.push(imgDataSrc);
+//                     }
+//                 }
+//
+//                 if (matches.length) {
+//                     imgSrc = matches.pop();
+//                 }
+//
+//                 if (lazy.isVisible(elements[i])) {
+//                     if (imgSrc !== elements[i].getAttribute("src")) {
+//                         lazy.preloadImage(imgSrc, elements[i], 'img')
+//                         eventCount++;
+//                     }
+//                 }
+//             }
+//
+//             if (!elements.length || eventCount == elements.length) {
+//                 lazy.releaseEvents();
+//             }
+//         },
+//         isVisible    : function (elem) {
+//             var viewport = elem.getBoundingClientRect();
+//             return (viewport.top >= 0 && viewport.left >= 0 && viewport.right < window.innerWidth && viewport.bottom < window.innerHeight);
+//         },
+//         preloadImage:function (source, element, type) {
+//             let parent = this;
+//             if (source == '' || source == null) {
+//                 return false;
+//             }
+//             let imgsrc    = new Image();
+//             imgsrc.src    = source;
+//             imgsrc.elm    = element;
+//             imgsrc.onload = function () {
+//                 if (type === 'bg') {
+//                     this.elm.style.backgroundImage = "url('" + source + "')";
+//                 }
+//                 else {
+//                     this.elm.src = source;
+//                 }
+//             };
+//         },
+//         releaseEvents: function () {
+//             if (document.removeEventListener) {
+//                 root.removeEventListener('scroll', lazy.engine);
+//             } else {
+//                 root.detachEvent('onscroll', lazy.engine);
+//             }
+//             clearTimeout(timer);
 //         }
 //     };
-// };
-// /**
-//  * Attaches all needed event listeners for component behaviour.
-//  */
-// BgPolyfill.prototype.attachEventListeners = function () {
-//     // Assign reference to allow better minification.
-//     var eventListeners = this.eventListeners;
-//     eventListeners.bgPolyfill = this.bgPolyfill.bind(this);
-//     eventListeners.loadVisibleImg = this.loadVisibleImg.bind(this);
-//     window.addEventListener("resize", window.bgPolyfill, false);
-//     window.addEventListener("DOMContentLoaded", function () {
-//         eventListeners.bgPolyfill();
-//         eventListeners.loadVisibleImg();
-//     }, false);
-// };
-// return BgPolyfill;
-// }());
+// })(this)
+
